@@ -7,7 +7,7 @@ plugins {
     id("maven-publish")
     id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.7"
     id("eclipse")
-    id("com.gtnewhorizons.retrofuturagradle") version "1.3.19"
+    id("com.gtnewhorizons.retrofuturagradle") version "1.3.35"
 }
 
 // Project properties
@@ -31,7 +31,7 @@ minecraft {
     mcVersion.set("1.12.2")
 
     // Username for client run configurations
-    username.set("Kasumi_Nova")
+    username.set("sddsd2332")
 
     // Generate a field named VERSION with the mod version in the injected Tags class
     injectedTags.put("VERSION", project.version)
@@ -215,16 +215,17 @@ dependencies {
     implementation(rfg.deobf("curse.maven:component-model-hider-940949:4885858"))
     implementation(rfg.deobf("curse.maven:had-enough-items-557549:4810661"))
     implementation(rfg.deobf("curse.maven:the-one-probe-245211:2667280"))
-    implementation(rfg.deobf("curse.maven:ae2-extended-life-570458:5378163"))
-    implementation(rfg.deobf("curse.maven:ae2-fluid-crafting-rework-623955:5504001"))
-    implementation(rfg.deobf("curse.maven:nae2-884359:4955559"))
+    implementation(rfg.deobf("curse.maven:ae2-extended-life-570458:5411078"))
+    implementation(rfg.deobf("curse.maven:ae2-fluid-crafting-rework-623955:5533542"))
+    implementation(rfg.deobf("curse.maven:nae2-884359:5380800"))
+    implementation(rfg.deobf("curse.maven:mekanism-energistics-1027681:5408319"))
 //    implementation(rfg.deobf("curse.maven:applied-energistics-2-223794:2747063"))
 //    implementation(rfg.deobf("curse.maven:tx-loader-706505:4515357"))
     implementation(rfg.deobf("curse.maven:CodeChickenLib-242818:2779848"))
     compileOnly(rfg.deobf("curse.maven:nuclearcraft-overhauled-336895:3862197"))
     compileOnly(rfg.deobf("curse.maven:industrialcraft-2-242638:3078604"))
 //    implementation(rfg.deobf("sddsd233:mekceu-9.8.11.185"))
-    implementation(rfg.deobf("curse.maven:mekanism-ce-unofficial-840735:5397944"))
+    implementation(rfg.deobf("curse.maven:mekanism-ce-unofficial-840735:5618143"))
     implementation(rfg.deobf("curse.maven:RedstoneFlux-270789:2920436"))
     implementation(rfg.deobf("software.bernie.geckolib:geckolib-forge-1.12.2:3.0.31"))
     implementation(rfg.deobf("curse.maven:botania-225643:3330934"))
