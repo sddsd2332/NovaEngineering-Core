@@ -25,6 +25,7 @@ import github.kasuminova.novaeng.common.estorage.ECellDriveWatcher;
 import github.kasuminova.novaeng.common.estorage.EStorageCellHandler;
 import github.kasuminova.novaeng.common.item.estorage.EStorageCell;
 import github.kasuminova.novaeng.common.item.estorage.EStorageCellFluid;
+import github.kasuminova.novaeng.common.item.estorage.EStorageCellGas;
 import github.kasuminova.novaeng.common.item.estorage.EStorageCellItem;
 import github.kasuminova.novaeng.common.network.PktCellDriveStatusUpdate;
 import net.minecraft.item.ItemStack;
@@ -68,7 +69,7 @@ public class EStorageCellDrive extends EStoragePart implements ISaveProvider, IA
         return switch (data.type()) {
             case EMPTY -> 0;
             case ITEM -> 315;
-            case FLUID -> 25;
+            case FLUID, GAS -> 25;
         };
     }
 
@@ -88,6 +89,12 @@ public class EStorageCellDrive extends EStoragePart implements ISaveProvider, IA
                 case A -> EStorageCellFluid.LEVEL_A.getBytes(ItemStack.EMPTY);
                 case B -> EStorageCellFluid.LEVEL_B.getBytes(ItemStack.EMPTY);
                 case C -> EStorageCellFluid.LEVEL_C.getBytes(ItemStack.EMPTY);
+            };
+            case GAS -> switch (level) {
+                case EMPTY -> 0;
+                case A -> EStorageCellGas.LEVEL_A.getBytes(ItemStack.EMPTY);
+                case B -> EStorageCellGas.LEVEL_B.getBytes(ItemStack.EMPTY);
+                case C -> EStorageCellGas.LEVEL_C.getBytes(ItemStack.EMPTY);
             };
         };
     }
@@ -202,7 +209,9 @@ public class EStorageCellDrive extends EStoragePart implements ISaveProvider, IA
             type = DriveStorageType.ITEM;
         } else if (cell instanceof EStorageCellFluid) {
             type = DriveStorageType.FLUID;
-        } else {
+        }  else if (cell instanceof EStorageCellGas) {
+            type = DriveStorageType.GAS;
+        }else {
             return null;
         }
         return type;

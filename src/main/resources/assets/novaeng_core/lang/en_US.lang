@@ -15,6 +15,10 @@ item.novaeng_core.estorage_cell_fluid_16m.name=§9ECO - §bLE4 §9存储矩阵§
 item.novaeng_core.estorage_cell_fluid_64m.name=§9ECO - §6LE6 §9存储矩阵§b（流体）
 item.novaeng_core.estorage_cell_fluid_256m.name=§9ECO - §5LE9 §9存储矩阵§b（流体）
 
+item.novaeng_core.estorage_cell_gas_16m.name=§9ECO - §bLE4 §9存储矩阵§6（气体）
+item.novaeng_core.estorage_cell_gas_64m.name=§9ECO - §6LE6 §9存储矩阵§6（气体）
+item.novaeng_core.estorage_cell_gas_256m.name=§9ECO - §5LE9 §9存储矩阵§6（气体）
+
 novaeng.estorage_cell.insert.tip=蹲下时手持矩阵并右击驱动器以插入矩阵。
 novaeng.estorage_cell.extract.tip=蹲下时空手并右击驱动器以取出矩阵。
 novaeng.estorage_cell.l6.tip=§c只有 §6L6§c 等级及以上的主机可以驱动此矩阵。
@@ -360,11 +364,14 @@ gui.estorage_controller.cell_info.tip.2=字节使用：%s / %s
 
 gui.estorage_controller.cell_info.item=物品存储矩阵
 gui.estorage_controller.cell_info.fluid=流体存储矩阵
+gui.estorage_controller.cell_info.gas=气体存储矩阵
 gui.estorage_controller.cell_info.empty=未知
 
+gui.estorage_controller.graph.gas.percent=气体存储占用：%s%%
 gui.estorage_controller.graph.fluid.percent=流体存储占用：%s%%
 gui.estorage_controller.graph.item.percent=物品存储占用：%s%%
 gui.estorage_controller.graph.total.percent=总存储占用：%s%%
+gui.estorage_controller.graph.gas_type=气体类型：%s / %s
 gui.estorage_controller.graph.fluid_type=流体类型：%s / %s
 gui.estorage_controller.graph.item_type=物品类型：%s / %s
 gui.estorage_controller.graph.energy_usage=总耗能：%sAE/t

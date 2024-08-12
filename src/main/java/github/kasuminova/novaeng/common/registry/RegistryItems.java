@@ -3,6 +3,7 @@ package github.kasuminova.novaeng.common.registry;
 import github.kasuminova.novaeng.NovaEngineeringCore;
 import github.kasuminova.novaeng.client.renderer.EStorageEnergyCellItemRenderer;
 import github.kasuminova.novaeng.common.item.estorage.EStorageCellFluid;
+import github.kasuminova.novaeng.common.item.estorage.EStorageCellGas;
 import github.kasuminova.novaeng.common.item.estorage.EStorageCellItem;
 import github.kasuminova.novaeng.common.item.estorage.ItemBlockEStorageEnergyCell;
 import hellfirepvp.modularmachinery.common.item.ItemDynamicColor;
@@ -41,6 +42,9 @@ public class RegistryItems {
         ITEMS_TO_REGISTER.add(EStorageCellFluid.LEVEL_A);
         ITEMS_TO_REGISTER.add(EStorageCellFluid.LEVEL_B);
         ITEMS_TO_REGISTER.add(EStorageCellFluid.LEVEL_C);
+        ITEMS_TO_REGISTER.add(EStorageCellGas.LEVEL_A);
+        ITEMS_TO_REGISTER.add(EStorageCellGas.LEVEL_B);
+        ITEMS_TO_REGISTER.add(EStorageCellGas.LEVEL_C);
 
         registerItems();
 

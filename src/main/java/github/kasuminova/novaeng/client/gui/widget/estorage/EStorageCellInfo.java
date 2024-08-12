@@ -100,6 +100,7 @@ public class EStorageCellInfo extends Column {
             case EMPTY -> "unknown";
             case ITEM -> "item";
             case FLUID -> "fluid";
+            case GAS -> "gas";
         });
         String levelName = switch (level) {
             case EMPTY -> "unknown";
