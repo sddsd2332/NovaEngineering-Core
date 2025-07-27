@@ -15,7 +15,6 @@ public class NovaEngCoreLateMixinLoader implements ILateMixinLoader {
     private static final Map<String, BooleanSupplier> MIXIN_CONFIGS = new LinkedHashMap<>();
 
     static {
-        addMixinCFG("mixins.novaeng_core.json");
         addModdedMixinCFG("mixins.novaeng_core_ae2.json",                  "appliedenergistics2");
         addModdedMixinCFG("mixins.novaeng_core_astralsorcery.json",        "astralsorcery");
         addModdedMixinCFG("mixins.novaeng_core_athenaeum.json",            "athenaeum");
@@ -30,6 +29,18 @@ public class NovaEngCoreLateMixinLoader implements ILateMixinLoader {
         addModdedMixinCFG("mixins.novaeng_core_opticheck.json",            "opticheck");
         addModdedMixinCFG("mixins.novaeng_core_electroblobs.json",         "ebwizardry");
         addModdedMixinCFG("mixins.novaeng_core_psi.json",                  "psi");
+        addModdedMixinCFG("mixins.novaeng_core_libvulpes.json",                  "libvulpes");
+        addModdedMixinCFG("mixins.novaeng_core_techguns.json",                  "techguns");
+        addModdedMixinCFG("mixins.novaeng_core_codechickenlib.json","codechickenlib");
+        addModdedMixinCFG("mixins.novaeng_core_legendarytooltips.json","legendarytooltips");
+        addModdedMixinCFG("mixins.novaeng_core_avaritia.json","avaritia");
+        addModdedMixinCFG("mixins.novaeng_core_betterp2p.json","betterp2p");
+        addModdedMixinCFG("mixins.novaeng_core_nco.json","nuclearcraft");
+        addModdedMixinCFG("mixins.novaeng_core_lootoverhaul.json","lootoverhaul");
+        addModdedMixinCFG("mixins.novaeng_core_fluxnetworks.json","fluxnetworks");
+        addModdedMixinCFG("mixins.novaeng_core_extrabotany.json","extrabotany");
+        addModdedMixinCFG("mixins.novaeng_core_packagedauto.json","packagedauto");
+
         addMixinCFG("mixins.novaeng_core_forge_late.json");
         addMixinCFG("mixins.novaeng_core_dme.json",                               
                 () -> Loader.isModLoaded("deepmoblearning") && Loader.instance().getIndexedModList().get("deepmoblearning").getName().equals("DeepMobEvolution"));

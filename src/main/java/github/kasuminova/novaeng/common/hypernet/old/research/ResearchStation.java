@@ -27,6 +27,7 @@ import stanhebben.zenscript.annotations.ZenMethod;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * TODO: 硬编码喵
@@ -142,6 +143,8 @@ public class ResearchStation extends NetNode {
         double baseConsumption = currentResearching.getMinComputationPointPerTick();
         consumption = Math.min(baseConsumption, getComputationLeft());
 
+        final short overclockingValue = (short) Math.max(0,event.getController().getCustomDataTag().getShort("overclocking") - 1);
+
         ActiveMachineRecipe activeRecipe = event.getActiveRecipe();
         int totalTick = activeRecipe.getTotalTick();
         activeRecipe.setTick(Math.max((int) (getProgressPercent() * totalTick) - 1, 0));
@@ -149,15 +152,17 @@ public class ResearchStation extends NetNode {
 
         HyperNetEventHandler.addTickEndAction(() -> doExtraResearch(Math.min(
                 center.getComputationPointGeneration() - center.getComputationPointConsumption(),
-                Math.min(baseConsumption * 4, getComputationLeft())))
+                Math.min(baseConsumption * overclockingValue, getComputationLeft())))
         );
     }
 
     protected void doExtraResearch(final double maxConsumption) {
-        if (center != null) {
-            double consumed = center.consumeComputationPoint(maxConsumption);
-            completedPoints += consumed;
-            consumption += consumed;
+        if (maxConsumption > 0) {
+            if (center != null) {
+                double consumed = center.consumeComputationPoint(maxConsumption);
+                completedPoints += consumed;
+                consumption += consumed;
+            }
         }
 
         writeResearchProgressToDatabase();
@@ -168,7 +173,9 @@ public class ResearchStation extends NetNode {
         ActiveMachineRecipe recipe = thread.getActiveRecipe();
         recipe.setTick(recipe.getTotalTick() + 1);
 
-        Collection<Database> databases = center.getNode(Database.class);
+        Collection<Database> databases = center.getNode(Database.class).stream()
+                .filter(Database::isWorking)
+                .collect(Collectors.toList());
         if (databases.isEmpty()) {
             return;
         }

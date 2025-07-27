@@ -261,8 +261,8 @@ public class EFabricatorController extends EPartController<EFabricatorPart> {
 
     @Override
     protected void onAddPart(final EFabricatorPart part) {
-        if (part instanceof EFabricatorMEChannel channel) {
-            this.channel = channel;
+        if (part instanceof EFabricatorMEChannel channelc) {
+            this.channel = channelc;
         }
     }
 
@@ -349,11 +349,14 @@ public class EFabricatorController extends EPartController<EFabricatorPart> {
 
     public boolean offerWork(EFabricatorWorker.CraftWork work) {
         boolean success = false;
-        for (EFabricatorWorker fabricatorWorker : getWorkers()) {
-            if (!fabricatorWorker.isFull()) {
-                fabricatorWorker.offerWork(work);
+        for (EFabricatorWorker worker : getWorkers()) {
+            if (!worker.isFull()) {
+                var i = worker.getRemainingSpace();
+                worker.offerWork(work.split(i));
                 success = true;
-                break;
+                if (work.getSize() < 1) {
+                    break;
+                }
             }
         }
         if (success && activeCooling && !speedupApplied) {

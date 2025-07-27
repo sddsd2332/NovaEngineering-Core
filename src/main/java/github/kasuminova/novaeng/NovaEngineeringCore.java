@@ -4,6 +4,7 @@ import github.kasuminova.novaeng.client.hitokoto.HitokotoAPI;
 import github.kasuminova.novaeng.common.CommonProxy;
 import github.kasuminova.novaeng.common.command.CommandSPacketProfiler;
 import github.kasuminova.novaeng.common.config.NovaEngCoreConfig;
+import github.kasuminova.novaeng.common.handler.WorldLoadedHandler;
 import github.kasuminova.novaeng.common.network.*;
 import github.kasuminova.novaeng.common.network.packetprofiler.PktCProfilerReply;
 import github.kasuminova.novaeng.common.network.packetprofiler.PktCProfilerRequest;
@@ -31,7 +32,7 @@ import static github.kasuminova.novaeng.mixin.NovaEngCoreEarlyMixinLoader.LOG_PR
                        "required:mixinbooter@[8.0,);" +
                        "required:lumenized@[1.0.2,);",
         acceptedMinecraftVersions = "[1.12, 1.13)",
-        acceptableRemoteVersions = "[1.21.0, 1.22.0)"
+        acceptableRemoteVersions = "[1.21.7, 1.23.0)"
 )
 @SuppressWarnings("MethodMayBeStatic")
 public class NovaEngineeringCore {
@@ -60,7 +61,7 @@ public class NovaEngineeringCore {
                 if (hitokoto == null || hitokoto.isEmpty()) {
                     return;
                 }
-                LOG.info(LOG_PREFIX + hitokoto);
+                LOG.info(LOG_PREFIX + "{}", hitokoto);
             });
             thread.setName("NovaEng Core Hitokoto Initializer");
             thread.start();
@@ -123,15 +124,18 @@ public class NovaEngineeringCore {
     @Mod.EventHandler
     public void onServerStart(FMLServerStartingEvent event) {
         event.registerServerCommand(CommandSPacketProfiler.INSTANCE);
+        WorldLoadedHandler.REGISTERED_DIMENSIONS.clear();
+        WorldLoadedHandler.ERRORWROLD.clear();
+        WorldLoadedHandler.init = true;
     }
 
     @Mod.EventHandler
     public void onServerStopping(FMLServerStoppingEvent event) {
-        log.info(TextFormatting.BLUE + "服务器正在关闭，正在生成网络包报告。");
+        log.info("{}服务器正在关闭，正在生成网络包报告。", TextFormatting.BLUE);
         for (final String message : SPacketProfiler.getProfilerMessages()) {
             log.info(message);
         }
-        log.info(TextFormatting.BLUE + "所有玩家的完整网络包报告：");
+        log.info("{}所有玩家的完整网络包报告：", TextFormatting.BLUE);
         for (final String message : SPacketProfiler.getFullProfilerMessages()) {
             log.info(message);
         }
