@@ -2,11 +2,16 @@ package github.kasuminova.novaeng.common.registry;
 
 import github.kasuminova.novaeng.NovaEngineeringCore;
 import github.kasuminova.novaeng.client.renderer.EStorageEnergyCellItemRenderer;
+import github.kasuminova.novaeng.common.item.ItemBasic;
+import github.kasuminova.novaeng.common.item.ItemHorologiumCompass;
 import github.kasuminova.novaeng.common.item.ecalculator.ECalculatorCell;
 import github.kasuminova.novaeng.common.item.estorage.EStorageCellFluid;
+import github.kasuminova.novaeng.common.item.estorage.EStorageCellGas;
 import github.kasuminova.novaeng.common.item.estorage.EStorageCellItem;
 import github.kasuminova.novaeng.common.item.estorage.ItemBlockEStorageEnergyCell;
+import hellfirepvp.modularmachinery.common.base.Mods;
 import hellfirepvp.modularmachinery.common.item.ItemDynamicColor;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -19,7 +24,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import static hellfirepvp.modularmachinery.common.registry.RegistryItems.pendingDynamicColorItems;
 
@@ -27,10 +35,11 @@ import static hellfirepvp.modularmachinery.common.registry.RegistryItems.pending
 public class RegistryItems {
     public static final List<Item> ITEMS_TO_REGISTER = new LinkedList<>();
     public static final List<Item> ITEMS_TO_REGISTER_CT = new LinkedList<>();
-    public static final Map<String, Item> CUSTOM_MODEL_ITEMS_TO_REGISTER_CT = new LinkedHashMap<>();
+    public static final Map<String, Item> CUSTOM_MODEL_ITEMS_TO_REGISTER_CT = new Object2ObjectLinkedOpenHashMap<>();
 
     public static final List<Item> ITEM_MODELS_TO_REGISTER = new LinkedList<>();
-    public static final Map<String, Item> ITEM_CUSTOM_MODELS_TO_REGISTER = new LinkedHashMap<>();
+    public static final Map<String, Item> ITEM_CUSTOM_MODELS_TO_REGISTER = new Object2ObjectLinkedOpenHashMap<>();
+
 
     @SubscribeEvent
     public void registerItems(RegistryEvent.Register<Item> event) {
@@ -42,10 +51,19 @@ public class RegistryItems {
         ITEMS_TO_REGISTER.add(EStorageCellFluid.LEVEL_A);
         ITEMS_TO_REGISTER.add(EStorageCellFluid.LEVEL_B);
         ITEMS_TO_REGISTER.add(EStorageCellFluid.LEVEL_C);
-
+        if (Mods.MEKENG.isPresent()) {
+            ITEMS_TO_REGISTER.add(EStorageCellGas.LEVEL_A);
+            ITEMS_TO_REGISTER.add(EStorageCellGas.LEVEL_B);
+            ITEMS_TO_REGISTER.add(EStorageCellGas.LEVEL_C);
+        }
         ITEMS_TO_REGISTER.add(ECalculatorCell.L4);
         ITEMS_TO_REGISTER.add(ECalculatorCell.L6);
         ITEMS_TO_REGISTER.add(ECalculatorCell.L9);
+        if (Mods.ASTRAL_SORCERY.isPresent()) {
+            ITEMS_TO_REGISTER.add(ItemHorologiumCompass.INSTANCE);
+        }
+
+        ITEMS_TO_REGISTER.addAll(ItemBasic.getAllItem());
 
         registerItems();
 

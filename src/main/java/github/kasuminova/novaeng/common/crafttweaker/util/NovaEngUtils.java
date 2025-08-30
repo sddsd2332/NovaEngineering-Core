@@ -1,9 +1,11 @@
 package github.kasuminova.novaeng.common.crafttweaker.util;
 
 import crafttweaker.annotations.ZenRegister;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -12,6 +14,8 @@ import java.text.NumberFormat;
 @ZenClass("novaeng.NovaEngUtils")
 public class NovaEngUtils {
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.##");
+    public static final BigInteger BigLongMax = BigInteger.valueOf(Long.MAX_VALUE);
+    public static boolean isClient = FMLCommonHandler.instance().getEffectiveSide().isClient();
 
     static {
         DECIMAL_FORMAT.setRoundingMode(RoundingMode.HALF_UP);
@@ -50,6 +54,25 @@ public class NovaEngUtils {
             return formatDouble((double) value / 1_000_000_000_000_000L, 2) + "P";
         } else {
             return formatDouble((double) value / 1_000_000_000_000_000_000L, 2) + "E";
+        }
+    }
+
+    @ZenMethod
+    public static String formatNumber(BigInteger num) {
+        final var value = num.toString();
+        var BigValue = num.abs();
+        long big = BigValue.compareTo(BigLongMax) >= 0 ? Long.MAX_VALUE : BigValue.longValue();
+        StringBuilder zf = new StringBuilder();
+        if (value.startsWith("-")){
+            zf.append("-");
+        }
+        if (big != (Long.MAX_VALUE)){
+            return zf.append(formatNumber(big,1)).toString();
+        } else {
+            int cfs = value.length() - 1;
+            float cft = (1.00f * Integer.parseInt(value.substring(0,3))) / 100;
+
+            return zf.append(cft).append(" * 10 ^ ").append(cfs).toString();
         }
     }
 

@@ -23,7 +23,11 @@ import hellfirepvp.modularmachinery.common.util.BlockArray;
 import hellfirepvp.modularmachinery.common.util.IBlockStateDescriptor;
 import hellfirepvp.modularmachinery.common.util.MiscUtils;
 import ink.ikx.mmce.common.utils.StackUtils;
-import mcjty.theoneprobe.api.*;
+import mcjty.theoneprobe.api.ElementAlignment;
+import mcjty.theoneprobe.api.IProbeHitData;
+import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.theoneprobe.api.NumberFormat;
+import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -38,7 +42,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import vazkii.botania.common.Botania;
 import vazkii.botania.common.block.ModBlocks;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -47,7 +51,7 @@ import java.util.stream.Collectors;
 
 public class IllumPool implements MachineSpecial {
     public static final ResourceLocation REGISTRY_NAME = new ResourceLocation(ModularMachinery.MODID, "illum_pool");
-    public static final IllumPool ILLUM_POOL = new IllumPool();
+    public static final IllumPool INSTANCE = new IllumPool();
 
     public static final int MAX_MANA_STORE = 10_000_000;
     public static final int MAX_ILLUM_STORE = 10_000;
@@ -109,12 +113,6 @@ public class IllumPool implements MachineSpecial {
                 Collections.emptyList(),
                 Collections.singletonList("魔力池上方布满彩虹桥方块可使其激活§a普通模式§f，催化剂模式必须基于此模式。"),
                 StackUtils.getStackFromBlockState(blockBifrostPerm.getDefaultState())));
-        // 星光模式
-        machine.getMultiBlockModifiers().add(new MultiBlockModifierReplacement(STARLIGHT_CATALYST,
-                buildModifierReplacementBlockArray(blockLiquidStarLight, CATALYST_POS_PRESET.stream().map(pos -> pos.add(0, 1, 0)).collect(Collectors.toList())),
-                Collections.emptyList(),
-                Collections.singletonList("魔力池上方倒满星能液可使其激活§b星光模式§f，与催化剂模式冲突。"),
-                StackUtils.getStackFromBlockState(blockLiquidStarLight.getDefaultState())));
         // 炼金模式
         machine.getMultiBlockModifiers().add(new MultiBlockModifierReplacement(ALCHEMY_CATALYST,
                 buildModifierReplacementBlockArray(blockAlchemyCatalyst, CATALYST_POS_PRESET),
@@ -133,6 +131,12 @@ public class IllumPool implements MachineSpecial {
                 Collections.emptyList(),
                 Collections.singletonList("将彩虹桥方块下方的§c所有方块§f替换为§5次元催化器§f方块可使其激活§5次元模式§f。"),
                 StackUtils.getStackFromBlockState(blockDimensionCatalyst.getDefaultState())));
+        // 星光模式
+        machine.getMultiBlockModifiers().add(new MultiBlockModifierReplacement(STARLIGHT_CATALYST,
+                buildModifierReplacementBlockArray(blockLiquidStarLight, CATALYST_POS_PRESET.stream().map(pos -> pos.add(0, 1, 0)).collect(Collectors.toList())),
+                Collections.emptyList(),
+                Collections.singletonList("魔力池上方倒满星能液可使其激活§b星光模式§f，与催化剂模式冲突。"),
+                StackUtils.getStackFromBlockState(blockLiquidStarLight.getDefaultState())));
 
         machine.addMachineEventHandler(MachineStructureUpdateEvent.class, event -> {
             TileMultiblockMachineController controller = event.getController();
@@ -324,7 +328,7 @@ public class IllumPool implements MachineSpecial {
         int sparkleFXCount = 3;
         TileFactoryController factory = (TileFactoryController) controller;
         FactoryRecipeThread recipeThread = factory.getCoreRecipeThreads().get("辉光转化术式");
-        if (recipeThread != null) {
+        if (recipeThread != null && recipeThread.getActiveRecipe() != null) {
             sparkleFXCount += Math.min(recipeThread.getActiveRecipe().getParallelism() / 40, 4);
         }
         for (int i = 0; i < sparkleFXCount; i++) {

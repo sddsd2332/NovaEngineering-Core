@@ -1,11 +1,20 @@
 package github.kasuminova.novaeng.client;
 
-
 import github.kasuminova.mmce.client.renderer.MachineControllerRenderer;
-import github.kasuminova.novaeng.client.gui.*;
+import github.kasuminova.novaeng.client.book.BookTransformerAppendModifiers;
+import github.kasuminova.novaeng.client.gui.GuiECalculatorController;
+import github.kasuminova.novaeng.client.gui.GuiEFabricatorController;
+import github.kasuminova.novaeng.client.gui.GuiEFabricatorPatternBus;
+import github.kasuminova.novaeng.client.gui.GuiEFabricatorPatternSearch;
+import github.kasuminova.novaeng.client.gui.GuiEStorageController;
+import github.kasuminova.novaeng.client.gui.GuiGeocentricDrill;
+import github.kasuminova.novaeng.client.gui.GuiHyperNetTerminal;
+import github.kasuminova.novaeng.client.gui.GuiModularServerAssembler;
+import github.kasuminova.novaeng.client.gui.GuiSingularityCore;
 import github.kasuminova.novaeng.client.handler.BlockAngelRendererHandler;
 import github.kasuminova.novaeng.client.handler.ClientEventHandler;
 import github.kasuminova.novaeng.client.handler.HyperNetClientEventHandler;
+import github.kasuminova.novaeng.client.util.ExJEI;
 import github.kasuminova.novaeng.client.util.TitleUtils;
 import github.kasuminova.novaeng.common.CommonProxy;
 import github.kasuminova.novaeng.common.command.CommandPacketProfiler;
@@ -29,12 +38,19 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import slimeknights.tconstruct.library.book.TinkerBook;
 
 import javax.annotation.Nullable;
+import java.io.File;
+
+import static github.kasuminova.novaeng.mixin.NovaEngCoreEarlyMixinLoader.checkJavaVersion;
+import static github.kasuminova.novaeng.mixin.NovaEngCoreEarlyMixinLoader.isCleanroomLoader;
 
 @SuppressWarnings("MethodMayBeStatic")
 @Mod.EventBusSubscriber(Side.CLIENT)
@@ -47,6 +63,15 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void construction() {
         super.construction();
+
+        var config = new Configuration(new File(Loader.instance().getConfigDir(), "novaeng_core.cfg"));
+        config.load();
+        if (config.getBoolean("javaCheck", Configuration.CATEGORY_GENERAL,true,"java1.8.0_51 is bad")) {
+            if (!isCleanroomLoader()){
+                checkJavaVersion();
+            }
+        }
+        config.save();
 
         TitleUtils.setRandomTitle("*Construction*");
     }
@@ -70,6 +95,10 @@ public class ClientProxy extends CommonProxy {
         super.init();
 
         TitleUtils.setRandomTitle("*Init*");
+
+        if (Loader.isModLoaded("ic2")) {
+            ExJEI.jeiCreate();
+        }
     }
 
     @Override
@@ -80,6 +109,12 @@ public class ClientProxy extends CommonProxy {
         ClientCommandHandler.instance.registerCommand(CommandPacketProfiler.INSTANCE);
 
         TitleUtils.setRandomTitle("*PostInit*");
+
+        if (Loader.isModLoaded("ic2")) {
+            ExJEI.jeiRecipeRegister();
+        }
+
+        TinkerBook.INSTANCE.addTransformer(BookTransformerAppendModifiers.INSTANCE_FALSE);
     }
 
     @Override

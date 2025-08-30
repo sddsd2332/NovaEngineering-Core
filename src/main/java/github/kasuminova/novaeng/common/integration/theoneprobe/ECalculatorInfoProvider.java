@@ -9,7 +9,12 @@ import github.kasuminova.novaeng.common.ecalculator.ECPUCluster;
 import github.kasuminova.novaeng.common.tile.ecotech.ecalculator.ECalculatorController;
 import github.kasuminova.novaeng.common.tile.ecotech.ecalculator.ECalculatorThreadCore;
 import github.kasuminova.novaeng.common.util.ColorUtils;
-import mcjty.theoneprobe.api.*;
+import mcjty.theoneprobe.api.ElementAlignment;
+import mcjty.theoneprobe.api.IProbeHitData;
+import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.theoneprobe.api.IProbeInfoProvider;
+import mcjty.theoneprobe.api.NumberFormat;
+import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -17,7 +22,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 
 public class ECalculatorInfoProvider implements IProbeInfoProvider {
@@ -77,8 +82,8 @@ public class ECalculatorInfoProvider implements IProbeInfoProvider {
                 .progress((int) (percent * 75), 75, probeInfo.defaultProgressStyle()
                         .prefix(progressStr)
                         .filledColor(color)
-                        .alternateFilledColor(darkenColor(color, .8))
-                        .borderColor(lightenColor(color, .8))
+                        .alternateFilledColor(darkenColor(color))
+                        .borderColor(lightenColor(color))
                         .backgroundColor(0xFF000000)
                         .numberFormat(NumberFormat.NONE)
                         .width(75)
@@ -142,8 +147,8 @@ public class ECalculatorInfoProvider implements IProbeInfoProvider {
                 .progress((int) (percent * 150), 150, probeInfo.defaultProgressStyle()
                         .prefix(progressStr)
                         .filledColor(color)
-                        .alternateFilledColor(darkenColor(color, .8))
-                        .borderColor(lightenColor(color, .8))
+                        .alternateFilledColor(darkenColor(color))
+                        .borderColor(lightenColor(color))
                         .backgroundColor(0xFF000000)
                         .numberFormat(NumberFormat.NONE)
                         .width(150)
@@ -162,8 +167,8 @@ public class ECalculatorInfoProvider implements IProbeInfoProvider {
                 .progress((int) (percent * 100), 100, probeInfo.defaultProgressStyle()
                         .prefix(progressStr)
                         .filledColor(color)
-                        .alternateFilledColor(darkenColor(color, .8))
-                        .borderColor(lightenColor(color, .8))
+                        .alternateFilledColor(darkenColor(color))
+                        .borderColor(lightenColor(color))
                         .backgroundColor(0xFF000000)
                         .numberFormat(NumberFormat.NONE)
                         .width(100)
@@ -211,19 +216,19 @@ public class ECalculatorInfoProvider implements IProbeInfoProvider {
 
     // Utility methods to darken and lighten colors
 
-    private static int darkenColor(int color, double factor) {
+    private static int darkenColor(int color) {
         int a = (color >> 24) & 0xFF;
-        int r = (int) (((color >> 16) & 0xFF) * factor);
-        int g = (int) (((color >> 8) & 0xFF) * factor);
-        int b = (int) ((color & 0xFF) * factor);
+        int r = (int) (((color >> 16) & 0xFF) * 0.8);
+        int g = (int) (((color >> 8) & 0xFF) * 0.8);
+        int b = (int) ((color & 0xFF) * 0.8);
         return (a << 24) | (r << 16) | (g << 8) | b;
     }
 
-    private static int lightenColor(int color, double factor) {
+    private static int lightenColor(int color) {
         int a = (color >> 24) & 0xFF;
-        int r = Math.min(255, (int) (((color >> 16) & 0xFF) / factor));
-        int g = Math.min(255, (int) (((color >> 8) & 0xFF) / factor));
-        int b = Math.min(255, (int) ((color & 0xFF) / factor));
+        int r = Math.min(255, (int) (((color >> 16) & 0xFF) / 0.8));
+        int g = Math.min(255, (int) (((color >> 8) & 0xFF) / 0.8));
+        int b = Math.min(255, (int) ((color & 0xFF) / 0.8));
         return (a << 24) | (r << 16) | (g << 8) | b;
     }
 

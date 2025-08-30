@@ -8,11 +8,12 @@ plugins {
     id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.7"
     id("eclipse")
     id("com.gtnewhorizons.retrofuturagradle") version "1.3.19"
+    kotlin("jvm")
 }
 
 // Project properties
 group = "github.kasuminova.novaeng"
-version = "1.21.1"
+version = "1.22.5"
 
 // Set the toolchain version to decouple the Java we run Gradle with from the Java used to compile and run the mod
 java {
@@ -46,6 +47,8 @@ minecraft {
     args.add("-Dmixin.hotSwap=true")
     args.add("-Dmixin.checks.interfaces=true")
     args.add("-Dmixin.debug.export=true")
+    //args.add("-Dlegacy.debugClassLoading=true")
+    //args.add("-Dlegacy.debugClassLoadingSave=true")
     extraRunJvmArguments.addAll(args)
 
     // If needed, add extra tweaker classes like for mixins.
@@ -167,6 +170,7 @@ repositories {
         url = uri("http://jenkins.usrv.eu:8081/nexus/content/groups/public/")
         isAllowInsecureProtocol = true
     }
+    mavenCentral()
 }
 
 //mixin {
@@ -207,21 +211,36 @@ dependencies {
 
     // Mod Dependencies
     implementation("CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.+")
-    implementation(rfg.deobf("hellfirepvp:modularmachinery:2.1.0:main"))
+    implementation(rfg.deobf("curse.maven:electroblobs-wizardry-265642:5354477"))
+    implementation(rfg.deobf("kasuminova:ModularMachinery-CE:2.1.6:dev"))
     implementation(rfg.deobf("kasuminova:MMCE-ComponentModelHider:1.1:dev"))
     implementation(rfg.deobf("lumien231:resourceloader:1.5.3:main"))
 //    implementation(rfg.deobf("curse.maven:modularmachinery-community-edition-817377:5255734"))
-    implementation(rfg.deobf("kasuminova:lumenized:1.0.3:dev"))
+    implementation(rfg.deobf("curse.maven:extended-crafting-terminals-for-applied-1157825:6503414"))
+    implementation(rfg.deobf("curse.maven:lumenized-1234162:6378222"))
+    implementation(rfg.deobf("curse.maven:mantle-74924:2713386"))
+    implementation(rfg.deobf("curse.maven:tinkers-construct-74072:2902483"))
+    implementation(rfg.deobf("curse.maven:not-enough-energistics-515565:5234732"))
+    implementation(rfg.deobf("curse.maven:psi-241665:3085917"))
+    implementation(rfg.deobf("curse.maven:RandomTweaker-514170:5528753"))
+    implementation(rfg.deobf("curse.maven:jetif-303122:2919936"))
     implementation(rfg.deobf("curse.maven:ctm-267602:2915363"))
 //    implementation(rfg.deobf("curse.maven:component-model-hider-940949:4885858"))
     implementation(rfg.deobf("curse.maven:had-enough-items-557549:4810661"))
     implementation(rfg.deobf("curse.maven:the-one-probe-245211:2667280"))
-    implementation(rfg.deobf("curse.maven:ae2-extended-life-570458:5378163"))
+    implementation(rfg.deobf("curse.maven:FTB-Library-237167:2985811"))
+    implementation(rfg.deobf("curse.maven:FTBU-237102:3157548"))
+    implementation(rfg.deobf("curse.maven:ae2-extended-life-570458:6302098"))
     implementation(rfg.deobf("curse.maven:ae2-fluid-crafting-rework-623955:5504001"))
-    implementation(rfg.deobf("curse.maven:nae2-884359:4955559"))
+    compileOnly(rfg.deobf("curse.maven:MekanismEnergistics-1027681:5775101"))
+    implementation(rfg.deobf("curse.maven:nae2-884359:5380800"))
 //    implementation(rfg.deobf("curse.maven:applied-energistics-2-223794:2747063"))
 //    implementation(rfg.deobf("curse.maven:tx-loader-706505:4515357"))
     implementation(rfg.deobf("curse.maven:CodeChickenLib-242818:2779848"))
+    implementation(rfg.deobf("curse.maven:wanionlib-253043:4623135"))
+    implementation(rfg.deobf("curse.maven:avaritia-1-1x-unofficial-1165010:6207893"))
+    implementation(rfg.deobf("curse.maven:eternal-singularity-253077:2922583"))
+    compileOnly(rfg.deobf("curse.maven:optifine-check-626981:3806565"))
     compileOnly(rfg.deobf("curse.maven:nuclearcraft-overhauled-336895:3862197"))
     compileOnly(rfg.deobf("curse.maven:industrialcraft-2-242638:3078604"))
 //    implementation(rfg.deobf("sddsd233:mekceu-9.8.11.185"))
@@ -231,16 +250,19 @@ dependencies {
     implementation(rfg.deobf("curse.maven:botania-225643:3330934"))
     implementation(rfg.deobf("curse.maven:astral-sorcery-241721:3044416"))
     implementation(rfg.deobf("curse.maven:baubles-227083:2518667"))
-    implementation(rfg.deobf("curse.maven:zenutil-401178:5056679"))
+    implementation(rfg.deobf("curse.maven:zenutil-401178:6033519"))
     compileOnly(rfg.deobf("curse.maven:smooth-font-285742:3944565"))
     implementation(rfg.deobf("curse.maven:scalingguis-319656:2716334"))
     implementation(rfg.deobf("curse.maven:lolasm-460609:5257348"))
     compileOnly(rfg.deobf("curse.maven:matter-overdrive-community-edition-557428:4592069"))
-    compileOnly(rfg.deobf("curse.maven:cofh-core-69162:2920433"))
-    compileOnly(rfg.deobf("curse.maven:cofh-world-271384:2920434"))
-    compileOnly(rfg.deobf("curse.maven:thermal-foundation-222880:2926428"))
+    implementation(rfg.deobf("curse.maven:cofh-core-69162:2920433"))
+    implementation(rfg.deobf("curse.maven:cofh-world-271384:2920434"))
+    implementation(rfg.deobf("curse.maven:thermal-foundation-222880:2926428"))
     compileOnly(rfg.deobf("curse.maven:thermal-innovation-291737:2920441"))
-    compileOnly(rfg.deobf("curse.maven:thermal-expansion-69163:2926431"))
+    compileOnly(rfg.deobf("curse.maven:tesla-244651:2487959"))
+    implementation(rfg.deobf("curse.maven:mcjtylib-233105:2745846"))
+    implementation(rfg.deobf("curse.maven:rftools-224641:2861573"))
+    implementation(rfg.deobf("curse.maven:thermal-expansion-69163:2926431"))
     compileOnly(rfg.deobf("curse.maven:athenaeum-284350:4633750"))
     compileOnly(rfg.deobf("curse.maven:artisan-worktables-284351:3205284"))
     compileOnly(rfg.deobf("curse.maven:endercore-231868:4671384"))
@@ -248,22 +270,37 @@ dependencies {
     compileOnly(rfg.deobf("curse.maven:more-electric-tools-366298:3491973"))
     compileOnly(rfg.deobf("curse.maven:brandonscore-231382:3051539"))
     compileOnly(rfg.deobf("curse.maven:draconicevolution-223565:3051542"))
-    compileOnly(rfg.deobf("curse.maven:extrabotany-299086:3112313"))
-    compileOnly(rfg.deobf("curse.maven:libnine-322344:3509087"))
-    compileOnly(rfg.deobf("curse.maven:lazy-ae2-322347:3254160"))
+    implementation(rfg.deobf("curse.maven:extrabotany-299086:3112313"))
+    implementation(rfg.deobf("curse.maven:libnine-322344:3509087"))
+    implementation(rfg.deobf("curse.maven:lazy-ae2-322347:3254160"))
     compileOnly(rfg.deobf("curse.maven:better-chat-363860:3048407"))
     compileOnly(rfg.deobf("curse.maven:ae2-fluid-crafting-rework-623955:5237484"))
-    compileOnly(rfg.deobf("curse.maven:ingame-info-xml-225604:2489566"))
     compileOnly(rfg.deobf("curse.maven:lunatriuscore-225605:2489549"))
     compileOnly(rfg.deobf("curse.maven:immersive-engineering-231951:2974106"))
+    compileOnly(rfg.deobf("curse.maven:ingame-info-xml-225604:2489566"))
     compileOnly(rfg.deobf("curse.maven:unidict-244258:3553627"))
     compileOnly(rfg.deobf("curse.maven:wanionlib-253043:4623135"))
     compileOnly(rfg.deobf("curse.maven:dme-737252:5043404"))
     // Performance Test Tool
     runtimeOnly(rfg.deobf("curse.maven:spark-361579:3245793"))
     // Optimization
-    implementation(rfg.deobf("curse.maven:stellarcore-1064321:5791405"))
+    implementation(rfg.deobf("curse.maven:stellarcore-1064321:5952608"))
     implementation(rfg.deobf("curse.maven:configanytime-870276:5212709"))
+    implementation(rfg.deobf("curse.maven:LibVulpes-236541:3801015"))
+    implementation(rfg.deobf("curse.maven:AutoRegLib-250363:2746011"))
+    implementation(rfg.deobf("curse.maven:Cucumber-272335:2645867"))
+    implementation(rfg.deobf("curse.maven:LibVulpes-236541:3801015"))
+    implementation(rfg.deobf("curse.maven:extended-crafting-nomifactory-edition-398267:5778512"))
+    implementation(rfg.deobf("curse.maven:techguns-244201:2958103"))
+    implementation(rfg.deobf("curse.maven:legendary-tooltips-532127:5734973"))
+    implementation(rfg.deobf("curse.maven:betterer-p2p-943734:4928154"))
+    implementation(rfg.deobf("curse.maven:nuclearcraft-overhauled-336895:6605808"))
+    implementation(rfg.deobf("curse.maven:Loot-Overhaul-299389:2711740"))
+    implementation(rfg.deobf("curse.maven:Flux-Networks-248020:3178199"))
+    implementation(rfg.deobf("curse.maven:BloodMagic-224791:2822288"))
+    implementation(rfg.deobf("curse.maven:dme-737252:5985530"))
+    implementation(rfg.deobf("curse.maven:packagedauto-308380:6312996"))
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 // Publishing to a Maven repository
@@ -317,6 +354,9 @@ idea {
                     self.add(Gradle("4. Run Obfuscated Server").apply {
                         setProperty("taskNames", listOf("runObfServer"))
                     })
+                    self.add(Gradle("5. Build Jars").apply {
+                        setProperty("taskNames", listOf("build"))
+                    })
                     /*
                     These require extra configuration in IntelliJ, so are not enabled by default
                     self.add(Application("Run Client (IJ Native, Deprecated)", project).apply {
@@ -350,7 +390,7 @@ idea {
                     afterEvaluate {
                         self.javac.moduleJavacAdditionalOptions = mapOf(
                                 (project.name + ".main") to
-                                        tasks.compileJava.get().options.compilerArgs.map { '"' + it + '"' }.joinToString(" ")
+                                        tasks.compileJava.get().options.compilerArgs.joinToString(" ") { '"' + it + '"' }
                         )
                     }
                 }

@@ -5,18 +5,44 @@ import appeng.api.storage.ICellHandler;
 import github.kasuminova.mmce.common.integration.ModIntegrationAE2;
 import github.kasuminova.novaeng.NovaEngineeringCore;
 import github.kasuminova.novaeng.common.adapter.RecipeAdapterExtended;
-import github.kasuminova.novaeng.common.container.*;
+import github.kasuminova.novaeng.common.container.ContainerECalculatorController;
+import github.kasuminova.novaeng.common.container.ContainerEFabricatorController;
+import github.kasuminova.novaeng.common.container.ContainerEFabricatorPatternBus;
+import github.kasuminova.novaeng.common.container.ContainerEFabricatorPatternSearch;
+import github.kasuminova.novaeng.common.container.ContainerEStorageController;
+import github.kasuminova.novaeng.common.container.ContainerGeocentricDrill;
+import github.kasuminova.novaeng.common.container.ContainerHyperNetTerminal;
+import github.kasuminova.novaeng.common.container.ContainerModularServerAssembler;
+import github.kasuminova.novaeng.common.container.ContainerSingularityCore;
+import github.kasuminova.novaeng.common.enchantment.MagicBreaking;
 import github.kasuminova.novaeng.common.estorage.EStorageCellHandler;
-import github.kasuminova.novaeng.common.handler.*;
+import github.kasuminova.novaeng.common.handler.ECalculatorEventHandler;
+import github.kasuminova.novaeng.common.handler.EFabricatorEventHandler;
+import github.kasuminova.novaeng.common.handler.EStorageEventHandler;
+import github.kasuminova.novaeng.common.handler.EnchantmentHandler;
+import github.kasuminova.novaeng.common.handler.HyperNetEventHandler;
+import github.kasuminova.novaeng.common.handler.HyperNetMachineEventHandler;
+import github.kasuminova.novaeng.common.handler.OreHandler;
+import github.kasuminova.novaeng.common.handler.WorldLoadedHandler;
 import github.kasuminova.novaeng.common.hypernet.old.HyperNetTerminal;
 import github.kasuminova.novaeng.common.hypernet.old.machine.AssemblyLine;
 import github.kasuminova.novaeng.common.hypernet.old.recipe.HyperNetRecipeManager;
 import github.kasuminova.novaeng.common.integration.IntegrationCRT;
 import github.kasuminova.novaeng.common.integration.ic2.IntegrationIC2;
 import github.kasuminova.novaeng.common.integration.theoneprobe.IntegrationTOP;
+import github.kasuminova.novaeng.common.machine.BiogenicSimulationComputer;
+import github.kasuminova.novaeng.common.machine.DreamEnergyCore;
+import github.kasuminova.novaeng.common.machine.Drills.DifferentWorld;
+import github.kasuminova.novaeng.common.machine.Drills.ManaOreDrill;
+import github.kasuminova.novaeng.common.machine.Drills.MineralExtractor;
+import github.kasuminova.novaeng.common.machine.Drills.OrichalcosDrill;
+import github.kasuminova.novaeng.common.machine.Drills.VoidMiner;
 import github.kasuminova.novaeng.common.machine.GeocentricDrill;
 import github.kasuminova.novaeng.common.machine.IllumPool;
+import github.kasuminova.novaeng.common.machine.MMAltar;
+import github.kasuminova.novaeng.common.machine.MaterialSequenceProcessing;
 import github.kasuminova.novaeng.common.machine.SingularityCore;
+import github.kasuminova.novaeng.common.machine.SpaceGenerator;
 import github.kasuminova.novaeng.common.registry.RegistryBlocks;
 import github.kasuminova.novaeng.common.registry.RegistryHyperNet;
 import github.kasuminova.novaeng.common.registry.RegistryItems;
@@ -28,7 +54,9 @@ import github.kasuminova.novaeng.common.tile.ecotech.efabricator.EFabricatorCont
 import github.kasuminova.novaeng.common.tile.ecotech.efabricator.EFabricatorPatternBus;
 import github.kasuminova.novaeng.common.tile.ecotech.estorage.EStorageController;
 import github.kasuminova.novaeng.common.tile.machine.GeocentricDrillController;
+import github.kasuminova.novaeng.common.trait.Register;
 import github.kasuminova.novaeng.common.util.MachineCoolants;
+import github.kasuminova.novaeng.mixin.NovaEngCoreEarlyMixinLoader;
 import github.kasuminova.novaeng.mixin.ae2.AccessorCellRegistry;
 import hellfirepvp.modularmachinery.ModularMachinery;
 import hellfirepvp.modularmachinery.common.base.Mods;
@@ -42,6 +70,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -55,7 +84,9 @@ public class CommonProxy implements IGuiHandler {
     }
 
     public void construction() {
-
+        if (Loader.isModLoaded("ecoaeextension")){
+            throw new RuntimeException(NovaEngCoreEarlyMixinLoader.getString("mod.ecoae.warning"));
+        }
     }
 
     public void preInit() {
@@ -66,10 +97,15 @@ public class CommonProxy implements IGuiHandler {
         MinecraftForge.EVENT_BUS.register(EStorageEventHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(EFabricatorEventHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(ECalculatorEventHandler.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(WorldLoadedHandler.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(EnchantmentHandler.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(OreHandler.INSTANCE);
 
         if (Loader.isModLoaded("ic2")) {
             IntegrationIC2.preInit();
         }
+
+        ForgeRegistries.ENCHANTMENTS.register(MagicBreaking.MAGICBREAKING);
     }
 
     public void init() {
@@ -77,27 +113,46 @@ public class CommonProxy implements IGuiHandler {
                 new ResourceLocation(ModularMachinery.MODID, "hypernet_terminal"),
                 HyperNetTerminal.class
         );
-
-        IntegrationTOP.registerProvider();
+        if (Loader.isModLoaded("theoneprobe")) IntegrationTOP.registerProvider();
         RecipeAdapterExtended.registerAdapter();
         AssemblyLine.registerNetNode();
         HyperNetRecipeManager.registerRecipes();
         if (Mods.ASTRAL_SORCERY.isPresent() && Mods.BOTANIA.isPresent()) {
-            RegistryMachineSpecial.registrySpecialMachine(IllumPool.ILLUM_POOL);
+            RegistryMachineSpecial.registrySpecialMachine(IllumPool.INSTANCE);
         }
         if (Mods.GECKOLIB.isPresent()) {
-            RegistryMachineSpecial.registrySpecialMachine(SingularityCore.SINGULARITY_CORE);
+            RegistryMachineSpecial.registrySpecialMachine(SingularityCore.INSTANCE);
         }
-        RegistryMachineSpecial.registrySpecialMachine(GeocentricDrill.GEOCENTRIC_DRILL);
+        if (Mods.BM2.isPresent()) {
+            RegistryMachineSpecial.registrySpecialMachine(MMAltar.INSTANCE);
+        }
+        RegistryMachineSpecial.registrySpecialMachine(DreamEnergyCore.INSTANCE);
+        RegistryMachineSpecial.registrySpecialMachine(GeocentricDrill.INSTANCE);
+        if (Loader.isModLoaded("deepmoblearning")) {
+            RegistryMachineSpecial.registrySpecialMachine(MaterialSequenceProcessing.INSTANCE);
+            RegistryMachineSpecial.registrySpecialMachine(BiogenicSimulationComputer.INSTANCE);
+        }
+        if (Loader.isModLoaded("avaritia")){
+            RegistryMachineSpecial.registrySpecialMachine(SpaceGenerator.INSTANCE);
+        }
         if (Mods.AE2.isPresent()) {
             List<ICellHandler> handlers = ((AccessorCellRegistry) (AEApi.instance().registries().cell())).getHandlers();
             handlers.add(0, EStorageCellHandler.INSTANCE);
         }
+        if (Loader.isModLoaded("immersiveengineering")){
+            RegistryMachineSpecial.registrySpecialMachine(MineralExtractor.INSTANCE);
+            RegistryMachineSpecial.registrySpecialMachine(VoidMiner.INSTANCE);
+            RegistryMachineSpecial.registrySpecialMachine(DifferentWorld.INSTANCE);
+            RegistryMachineSpecial.registrySpecialMachine(ManaOreDrill.INSTANCE);
+            RegistryMachineSpecial.registrySpecialMachine(OrichalcosDrill.INSTANCE);
+        }
+        Register.TRAITREGISTER.registerModifiers();
     }
 
     public void postInit() {
         MachineCoolants.INSTANCE.init();
         HyperNetMachineEventHandler.registerHandler();
+        OreHandler.registry();
     }
 
     public void loadComplete() {

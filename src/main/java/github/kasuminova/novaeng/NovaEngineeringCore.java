@@ -2,16 +2,41 @@ package github.kasuminova.novaeng;
 
 import github.kasuminova.novaeng.client.hitokoto.HitokotoAPI;
 import github.kasuminova.novaeng.common.CommonProxy;
+import github.kasuminova.novaeng.common.command.CommandBuilder;
 import github.kasuminova.novaeng.common.command.CommandSPacketProfiler;
 import github.kasuminova.novaeng.common.config.NovaEngCoreConfig;
-import github.kasuminova.novaeng.common.network.*;
+import github.kasuminova.novaeng.common.handler.WorldLoadedHandler;
+import github.kasuminova.novaeng.common.network.ParallelNetworkManager;
+import github.kasuminova.novaeng.common.network.PktCellDriveStatusUpdate;
+import github.kasuminova.novaeng.common.network.PktECalculatorGUIData;
+import github.kasuminova.novaeng.common.network.PktEFabricatorGUIAction;
+import github.kasuminova.novaeng.common.network.PktEFabricatorGUIData;
+import github.kasuminova.novaeng.common.network.PktEFabricatorPatternSearchGUIAction;
+import github.kasuminova.novaeng.common.network.PktEFabricatorPatternSearchGUIUpdate;
+import github.kasuminova.novaeng.common.network.PktEFabricatorWorkerStatusUpdate;
+import github.kasuminova.novaeng.common.network.PktEStorageGUIData;
+import github.kasuminova.novaeng.common.network.PktGeocentricDrillControl;
+import github.kasuminova.novaeng.common.network.PktHyperNetStatus;
+import github.kasuminova.novaeng.common.network.PktMouseItemUpdate;
+import github.kasuminova.novaeng.common.network.PktPatternTermUploadPattern;
+import github.kasuminova.novaeng.common.network.PktResearchTaskComplete;
+import github.kasuminova.novaeng.common.network.PktResearchTaskProvide;
+import github.kasuminova.novaeng.common.network.PktResearchTaskProvideCreative;
+import github.kasuminova.novaeng.common.network.PktResearchTaskReset;
+import github.kasuminova.novaeng.common.network.PktTerminalGuiData;
 import github.kasuminova.novaeng.common.network.packetprofiler.PktCProfilerReply;
 import github.kasuminova.novaeng.common.network.packetprofiler.PktCProfilerRequest;
 import github.kasuminova.novaeng.common.profiler.SPacketProfiler;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.event.FMLConstructionEvent;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -31,7 +56,7 @@ import static github.kasuminova.novaeng.mixin.NovaEngCoreEarlyMixinLoader.LOG_PR
                        "required:mixinbooter@[8.0,);" +
                        "required:lumenized@[1.0.2,);",
         acceptedMinecraftVersions = "[1.12, 1.13)",
-        acceptableRemoteVersions = "[1.21.0, 1.22.0)"
+        acceptableRemoteVersions = "[1.21.7, 1.23.0)"
 )
 @SuppressWarnings("MethodMayBeStatic")
 public class NovaEngineeringCore {
@@ -60,7 +85,7 @@ public class NovaEngineeringCore {
                 if (hitokoto == null || hitokoto.isEmpty()) {
                     return;
                 }
-                LOG.info(LOG_PREFIX + hitokoto);
+                LOG.info(LOG_PREFIX + "{}", hitokoto);
             });
             thread.setName("NovaEng Core Hitokoto Initializer");
             thread.start();
@@ -72,13 +97,12 @@ public class NovaEngineeringCore {
         proxy.construction();
     }
 
-    @SuppressWarnings("ValueOfIncrementOrDecrementUsed")
+    @SuppressWarnings({"ValueOfIncrementOrDecrementUsed", "UnusedAssignment"})
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         event.getModMetadata().version = VERSION;
 
         byte start = 0;
-
         NET_CHANNEL.registerMessage(PktHyperNetStatus.class, PktHyperNetStatus.class, start++, Side.CLIENT);
         NET_CHANNEL.registerMessage(PktTerminalGuiData.class, PktTerminalGuiData.class, start++, Side.CLIENT);
         NET_CHANNEL.registerMessage(PktResearchTaskComplete.class, PktResearchTaskComplete.class, start++, Side.CLIENT);
@@ -124,15 +148,19 @@ public class NovaEngineeringCore {
     @Mod.EventHandler
     public void onServerStart(FMLServerStartingEvent event) {
         event.registerServerCommand(CommandSPacketProfiler.INSTANCE);
+        event.registerServerCommand(CommandBuilder.INSTANCE);
+        WorldLoadedHandler.REGISTERED_DIMENSIONS.clear();
+        WorldLoadedHandler.ERRORWROLD.clear();
+        WorldLoadedHandler.init = true;
     }
 
     @Mod.EventHandler
     public void onServerStopping(FMLServerStoppingEvent event) {
-        log.info(TextFormatting.BLUE + "服务器正在关闭，正在生成网络包报告。");
+        log.info("{}服务器正在关闭，正在生成网络包报告。", TextFormatting.BLUE);
         for (final String message : SPacketProfiler.getProfilerMessages()) {
             log.info(message);
         }
-        log.info(TextFormatting.BLUE + "所有玩家的完整网络包报告：");
+        log.info("{}所有玩家的完整网络包报告：", TextFormatting.BLUE);
         for (final String message : SPacketProfiler.getFullProfilerMessages()) {
             log.info(message);
         }
