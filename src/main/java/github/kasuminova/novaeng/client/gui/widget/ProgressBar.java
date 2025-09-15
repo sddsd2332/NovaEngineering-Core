@@ -1,6 +1,10 @@
 package github.kasuminova.novaeng.client.gui.widget;
 
-import github.kasuminova.mmce.client.gui.util.*;
+import github.kasuminova.mmce.client.gui.util.AnimationValue;
+import github.kasuminova.mmce.client.gui.util.MousePos;
+import github.kasuminova.mmce.client.gui.util.RenderPos;
+import github.kasuminova.mmce.client.gui.util.RenderSize;
+import github.kasuminova.mmce.client.gui.util.TextureProperties;
 import github.kasuminova.mmce.client.gui.widget.base.DynamicWidget;
 import github.kasuminova.mmce.client.gui.widget.base.WidgetGui;
 import net.minecraft.client.gui.GuiScreen;
@@ -104,7 +108,7 @@ public class ProgressBar extends DynamicWidget {
         if (idx >= progressTextures.size()) {
             return Optional.of(progressTextures.get(progressTextures.size() - 1));
         } else {
-            return Optional.of(progressTextures.get(idx));
+            return Optional.of(progressTextures.get(Math.max(idx, 0)));
         }
     }
 

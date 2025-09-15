@@ -1,9 +1,13 @@
 package github.kasuminova.novaeng.mixin;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraftforge.fml.common.Loader;
 import zone.rong.mixinbooter.ILateMixinLoader;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BooleanSupplier;
 
 import static github.kasuminova.novaeng.mixin.NovaEngCoreEarlyMixinLoader.LOG;
@@ -12,7 +16,7 @@ import static github.kasuminova.novaeng.mixin.NovaEngCoreEarlyMixinLoader.LOG_PR
 @SuppressWarnings({"unused", "SameParameterValue"})
 public class NovaEngCoreLateMixinLoader implements ILateMixinLoader {
 
-    private static final Map<String, BooleanSupplier> MIXIN_CONFIGS = new LinkedHashMap<>();
+    private static final Map<String, BooleanSupplier> MIXIN_CONFIGS = new Object2ObjectLinkedOpenHashMap<>();
 
     static {
         addModdedMixinCFG("mixins.novaeng_core_ae2.json",                  "appliedenergistics2");
@@ -40,6 +44,7 @@ public class NovaEngCoreLateMixinLoader implements ILateMixinLoader {
         addModdedMixinCFG("mixins.novaeng_core_fluxnetworks.json","fluxnetworks");
         addModdedMixinCFG("mixins.novaeng_core_extrabotany.json","extrabotany");
         addModdedMixinCFG("mixins.novaeng_core_packagedauto.json","packagedauto");
+        addModdedMixinCFG("mixins.novaeng_core_rftools.json","rftools");
 
         addMixinCFG("mixins.novaeng_core_forge_late.json");
         addMixinCFG("mixins.novaeng_core_dme.json",                               
@@ -48,7 +53,7 @@ public class NovaEngCoreLateMixinLoader implements ILateMixinLoader {
 
     @Override
     public List<String> getMixinConfigs() {
-        return new ArrayList<>(MIXIN_CONFIGS.keySet());
+        return new ObjectArrayList<>(MIXIN_CONFIGS.keySet());
     }
 
     @Override
