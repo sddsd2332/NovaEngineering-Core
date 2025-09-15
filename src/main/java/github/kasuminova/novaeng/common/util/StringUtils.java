@@ -1,10 +1,21 @@
 package github.kasuminova.novaeng.common.util;
 
+import com.github.bsideup.jabel.Desugar;
+import crafttweaker.annotations.ZenRegister;
+import github.kasuminova.novaeng.NovaEngineeringCore;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLists;
+import net.minecraft.util.text.translation.I18n;
+import stanhebben.zenscript.annotations.ZenClass;
+import stanhebben.zenscript.annotations.ZenMethod;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.stream.Collectors;
 
+@ZenRegister
+@ZenClass("novaeng.StringUtils")
 public class StringUtils {
 
     /**
@@ -13,7 +24,7 @@ public class StringUtils {
      * <p>算法相对暴力...</p>
      *
      * @param source 要排序的数组
-     * @param filter      字符串
+     * @param filter 字符串
      * @return 排序后的列表
      */
     public static List<String> sortWithMatchRate(final Collection<String> source, final String filter) {
@@ -60,14 +71,34 @@ public class StringUtils {
         return matchRate;
     }
 
-    public static class MatchResult implements Comparable<MatchResult> {
-        private final String str;
-        private final int matchRate;
+    @ZenMethod
+    public static String[] getTexts(String key, Object... objs) {
+        return getText(key, objs).toArray(new String[0]);
+    }
 
-        public MatchResult(final String str, final int matchRate) {
-            this.str = str;
-            this.matchRate = matchRate;
+    @ZenMethod
+    public static String[] getTexts(String key) {
+        return getText(key).toArray(new String[0]);
+    }
+
+    public static List<String> getText(String key) {
+        if (NovaEngineeringCore.proxy.isClient()) {
+            var s = I18n.translateToLocal(key);
+            return new ObjectArrayList<>(s.split("&n"));
         }
+        return ObjectLists.singleton(key);
+    }
+
+    public static List<String> getText(String key, Object... objs) {
+        if (NovaEngineeringCore.proxy.isClient()) {
+            var s = I18n.translateToLocalFormatted(key, objs);
+            return new ObjectArrayList<>(s.split("&n"));
+        }
+        return ObjectLists.singleton(key);
+    }
+
+    @Desugar
+    public record MatchResult(String str, int matchRate) implements Comparable<MatchResult> {
 
         @Override
         public int compareTo(final MatchResult o) {

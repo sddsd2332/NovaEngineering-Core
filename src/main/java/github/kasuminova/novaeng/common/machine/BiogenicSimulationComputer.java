@@ -24,6 +24,7 @@ import java.util.List;
 import static github.kasuminova.novaeng.common.crafttweaker.expansion.RecipePrimerHyperNet.requireComputationPoint;
 import static github.kasuminova.novaeng.common.util.RecipePrimerEx.setLore;
 
+//TODO:处理硬编码
 public class BiogenicSimulationComputer implements MachineSpecial {
     private static final String MachineID = "biogenic_simulation_computer";
     public static final ResourceLocation REGISTRY_NAME = new ResourceLocation(ModularMachinery.MODID, MachineID);
@@ -38,7 +39,7 @@ public class BiogenicSimulationComputer implements MachineSpecial {
     };
 
     @Override
-    public void init(final DynamicMachine machine) {
+    public void preInit(final DynamicMachine machine) {
         MachineModifier.setMaxThreads(MachineID, 0);
         for (String i : inscriberModels) {
             MachineModifier.addCoreThread(MachineID, FactoryRecipeThread.createCoreThread(i));

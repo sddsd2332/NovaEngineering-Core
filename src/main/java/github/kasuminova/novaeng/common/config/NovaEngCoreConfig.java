@@ -30,7 +30,7 @@ public class NovaEngCoreConfig {
 
         @Config.RequiresMcRestart
         @Config.Name("爆炸")
-        public boolean piece = true;
+        public boolean piece = false;
 
     }
 
@@ -39,6 +39,15 @@ public class NovaEngCoreConfig {
         @Config.RequiresMcRestart
         @Config.Name("ForceChunkHandler")
         public boolean ForceChunkHandler = true;
+
+
+        @Config.RequiresMcRestart
+        @Config.Name("SpecialMachine")
+        public boolean SpecialMachine = true;
+
+        @Config.RequiresMcRestart
+        @Config.Name("bot")
+        public boolean bot = true;
 
     }
 

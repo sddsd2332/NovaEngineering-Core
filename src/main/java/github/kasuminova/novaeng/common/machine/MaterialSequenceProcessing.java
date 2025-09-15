@@ -13,13 +13,14 @@ import net.minecraft.util.ResourceLocation;
 
 import static github.kasuminova.novaeng.common.crafttweaker.expansion.RecipePrimerHyperNet.requireResearch;
 
+//TODO:处理硬编码
 public class MaterialSequenceProcessing implements MachineSpecial {
     private static final String MachineID = "material_sequence_processing";
     public static final ResourceLocation REGISTRY_NAME = new ResourceLocation(ModularMachinery.MODID, MachineID);
     public static final MaterialSequenceProcessing INSTANCE = new MaterialSequenceProcessing();
 
     @Override
-    public void init(final DynamicMachine machine) {
+    public void preInit(final DynamicMachine machine) {
         for (MetadataDataModel model : MetadataManager.getDataModelMetadataList()) {
             if (!model.isEnabled()) continue;
             var item = model.getPristineMatter();

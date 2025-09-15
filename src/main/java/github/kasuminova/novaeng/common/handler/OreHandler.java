@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static crafttweaker.CraftTweakerAPI.itemUtils;
+
 @ZenRegister
 @ZenClass("novaeng.hypernet.RawOre")
 public class OreHandler {
@@ -38,6 +40,10 @@ public class OreHandler {
 
     private OreHandler(){}
 
+    public static IItemStack getRawOre(@NotNull ItemStack ore){
+        return getRawOre(CraftTweakerMC.getIItemStack(ore));
+    }
+
     @ZenMethod
     public static IItemStack getRawOre(@NotNull IItemStack ore){
         if (rawOreMap.containsKey(OreKey.getKey(CraftTweakerMC.getItemStack(ore)))){
@@ -47,6 +53,10 @@ public class OreHandler {
         }
     }
 
+    public static IItemStack getOre(@NotNull ItemStack ore){
+        return getOre(CraftTweakerMC.getIItemStack(ore));
+    }
+
     @ZenMethod
     public static IItemStack getOre(@NotNull IItemStack ore){
         if (oreMap.containsKey(OreKey.getKey(CraftTweakerMC.getItemStack(ore)))){
@@ -54,6 +64,25 @@ public class OreHandler {
         } else {
             return ore;
         }
+    }
+
+    public static final Map<String,String> VeinMap = new Object2ObjectOpenHashMap<>();
+    public static final Map<String,IItemStack> VeinItemMap = new Object2ObjectOpenHashMap<>();
+
+    @ZenMethod
+    public static void regOreVein(String name,String oreVeinItemName) {
+        VeinMap.put(name, oreVeinItemName);
+    }
+
+    @ZenMethod
+    public static IItemStack getOreVeinItem(String name){
+        var out = VeinItemMap.get(name);
+        if (out == null){
+            out = itemUtils.getItem("contenttweaker:" + VeinMap.get(name),0);
+            VeinMap.remove(name);
+            VeinItemMap.put(name,out);
+        }
+        return out;
     }
 
     public static void registry() {
